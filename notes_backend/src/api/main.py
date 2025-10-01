@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.db.session import init_db
+from src.api.routes.notes import router as notes_router
 
 app = FastAPI(
     title="Personal Notes API",
@@ -13,6 +14,7 @@ app = FastAPI(
     ],
 )
 
+# Preserve existing CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,7 +30,12 @@ def on_startup() -> None:
     init_db()
 
 
+# Health route preserved
 @app.get("/", tags=["health"], summary="Health Check")
 def health_check():
     """Simple health check endpoint."""
     return {"message": "Healthy"}
+
+
+# Include notes routes without an extra prefix so endpoints are at /notes
+app.include_router(notes_router)

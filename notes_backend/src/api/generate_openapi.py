@@ -3,10 +3,10 @@ import os
 
 from src.api.main import app
 
-# Get the OpenAPI schema
+# Generate and persist the OpenAPI schema to the interfaces directory so that
+# external consumers (e.g., frontend) can rely on it.
 openapi_schema = app.openapi()
 
-# Write to file
 output_dir = "interfaces"
 os.makedirs(output_dir, exist_ok=True)
 output_path = os.path.join(output_dir, "openapi.json")
