@@ -14,10 +14,11 @@ app = FastAPI(
     ],
 )
 
-# Preserve existing CORS configuration
+# Configure CORS to allow the frontend origin explicitly
+# This is required so the React app running on http://localhost:3000 can call the API on http://localhost:3001
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,7 +27,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup() -> None:
-    """Create database tables on application startup."""
+    """
+    Create database tables on application startup.
+
+    This ensures the SQLite file (notes.db) and all required tables exist before
+    serving any request, enabling seamless local development without migrations.
+    """
     init_db()
 
 
